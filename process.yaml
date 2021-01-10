@@ -1,0 +1,20 @@
+apps :
+  -
+    name : Sfile Api
+    script : ./index.js
+    instances : 3
+    exec_mode : cluster
+  -
+    name : Socket server
+    script : ./socket.io.js
+    instances : 1
+
+deploy:
+  production:
+    user: serveur_cid
+    host: 
+      - 192.168.1.74
+    repo: cid@192.168.1.63:/home/cid/Depots/Edy/sfile/api
+    ref: origin/master
+    path: /home/serveur_cid/Apps/Edy/sfile/api
+    post-deploy: yarn install ; pm2 startOrReload process.yaml ; pm2 save
