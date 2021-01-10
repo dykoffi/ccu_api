@@ -25,6 +25,13 @@ router
                         sendEmail(mail, filesDealFinish).then(() => {
                             filesDeal = []
                             if (!response) {
+                                res.header({
+                                    'Sameorigin': 'lax',
+                                    'Cache-Control': 'must-revalidate',
+                                    'Access-Control-Allow-Origin':'*',
+                                    'Access-Control-Request-Headers': '*',
+                                    'Access-Control-Allow-Methods': "POST, OPTIONS",
+                                })
                                 res.end("Traitement terminé, veuillez vérifier votre mail.")
                                 response = true
                             }
