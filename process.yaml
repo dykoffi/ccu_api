@@ -13,4 +13,4 @@ deploy:
     ref: origin/main
     repo: git@github.com:dykoffi/ccu_api.git
     path: /home/psante/Apps/test/ccu/api
-    post-deploy: yarn install ; pm2 startOrReload process.yaml ; pm2 save
+    post-deploy: npm install ; pm2 startOrReload process.yaml ; pm2 save
