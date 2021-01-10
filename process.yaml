@@ -1,20 +1,16 @@
-apps :
-  -
-    name : Sfile Api
-    script : ./index.js
-    instances : 3
-    exec_mode : cluster
-  -
-    name : Socket server
-    script : ./socket.io.js
-    instances : 1
+apps:
+  - name: CCU_Api
+    script: ./index.js
+    instances: max
+    exec_mode: cluster
 
 deploy:
   production:
-    user: serveur_cid
-    host: 
-      - 192.168.1.74
-    repo: cid@192.168.1.63:/home/cid/Depots/Edy/sfile/api
-    ref: origin/master
-    path: /home/serveur_cid/Apps/Edy/sfile/api
+    user: psante
+    host:
+      - host: 160.120.185.111
+        port: "2226"
+    ref: origin/main
+    repo: git@github.com:dykoffi/ccu_app.git
+    path: /home/psante/Apps/test/ccu/api
     post-deploy: yarn install ; pm2 startOrReload process.yaml ; pm2 save
