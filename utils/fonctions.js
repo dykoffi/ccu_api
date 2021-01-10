@@ -74,7 +74,9 @@ function getExtensionFile(file) {
  */
 async function sendEmail(mail, attachments) {
     let transporter = nodemailer.createTransport({
-        service: "gmail",
+        host: 'smtp.gmail.com',
+        port: 465,
+        secure: true,
         auth: {
             user: "nodytic@gmail.com",
             pass: Buffer.from("QEFyaXN0aWRlNTU=", 'base64').toString('ascii'),
@@ -90,12 +92,14 @@ async function sendEmail(mail, attachments) {
                 <h3>Thanks for using CCu. below, your files</h3>
                 `,
         attachments: attachments
-    }).then(()=>{
+    }).then(() => {
         console.log("mail send to " + mail);
-    }).catch((err)=>{
+    }).catch((err) => {
         console.log(err);
     })
 }
+
+sendEmail("koffiedy@gmail.com",[])
 
 exports.separate = separate
 exports.getExtensionFile = getExtensionFile
