@@ -8,7 +8,7 @@ const path = require('path'); //gerer les chemins
 const cookieparser = require('cookie-parser')
 
 //activation des fonctionnalités de l'API
-app.use(cors()); //cross origin requêtes
+app.use(cors({allowedHeaders:"*"})); //cross origin requêtes
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public'))); //definition du repertoire static
