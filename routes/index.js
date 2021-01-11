@@ -42,7 +42,7 @@ router
                             res.json(filesDealFinish)
                             response = true
                         }
-                    }, 2000);
+                    }, 1500);
 
                 })
                 .on('finish', async () => {
@@ -64,6 +64,8 @@ router
             rm(`./public/_files/${idsession}`, { force: true, recursive: true },()=>{
                 res.end()
             })
+        }else{
+            res.end()
         }
     })
 module.exports = router
