@@ -54,17 +54,23 @@ router
         }
     })
     .get('/download/:folder/:file', (req, res, next) => {
-        res.download(`./public/_files/${req.params.folder}/${req.params.file}`, () => {
-            console.log("Download");
-        })
+        if (existsSync(`./public/_files/${req.params.folder}/${req.params.file}`)) {
+            res.download(`./public/_files/${req.params.folder}/${req.params.file}`, () => {
+                console.log("Download");
+            })
+        } else {
+            res.status(204)
+            res.end("deleted")
+        }
+
     })
     .get('/initsession', (req, res, next) => {
         let idsession = req.headers.idsession.split('/').join('')
         if (existsSync(`./public/_files/${idsession}`)) {
-            rm(`./public/_files/${idsession}`, { force: true, recursive: true },()=>{
+            rm(`./public/_files/${idsession}`, { force: true, recursive: true }, () => {
                 res.end()
             })
-        }else{
+        } else {
             res.end()
         }
     })
