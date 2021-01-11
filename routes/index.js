@@ -1,14 +1,15 @@
 const express = require('express')
 const router = express.Router();
-const { join, basename } = require('path');
+const { basename } = require('path');
+const { rm, existsSync } = require('fs')
 const { dealFile } = require('../utils')
-const { sendEmail } = require('../utils/fonctions')
 const Busboy = require('busboy')
+const cron = require('node-cron');
+const moment = require('moment')
 
 router
-    .post('/upload/:email', (req, res, next) => {
-        let enMail = req.params.email
-        let mail = Buffer.from(enMail, 'base64').toString('ascii')
+    .post('/upload', (req, res, next) => {
+        let idsession = req.headers.idsession.split('/').join('')
         let busboy
         let filesDeal = []
         let response = false
@@ -17,19 +18,31 @@ router
             busboy = new Busboy({ headers: req.headers })
             busboy
                 .on('file', async function (fieldname, fileStream, filename, encoding, mimetype) {
-                    let fl = await dealFile(enMail, fileStream, basename(filename))
+                    let time = moment().add(4, 'minute')
+                    let min = time.get('minute')
+                    let heure = time.get('hour')
+                    let jour = time.get('DDD')
+                    let mois = time.get('month') + 1
+                    let fl = await dealFile(idsession, fileStream, basename(filename))
                     filesDeal.push(fl)
-                    let filesDealFinish = filesDeal.map(file => ({ filename: basename(file), path: file }))
+                    let task = cron.schedule(`${min} ${heure} ${jour} ${mois} *`, () => {
+                        rm(fl, () => {
+                            console.log("Suppression de fichier OK");
+                        })
+                    }, {
+                        scheduled: false
+                    });
+
+                    task.start();
+                    let filesDealFinish = filesDeal.map(file => ({ filename: basename(file), path: file.replace("public/_files/", "") }))
                     clearTimeout(envoie)
                     envoie = setTimeout(() => {
-                        sendEmail(mail, filesDealFinish).then(() => {
-                            filesDeal = []
-                            if (!response) {
-                                res.end("Traitement terminé, veuillez vérifier votre mail.")
-                                response = true
-                            }
-                        })
-                    }, 1500);
+                        filesDeal = []
+                        if (!response) {
+                            res.json(filesDealFinish)
+                            response = true
+                        }
+                    }, 2000);
 
                 })
                 .on('finish', async () => {
@@ -38,6 +51,19 @@ router
                 .pipe(busboy)
         } catch (err) {
             return next(err)
+        }
+    })
+    .get('/download/:folder/:file', (req, res, next) => {
+        res.download(`./public/_files/${req.params.folder}/${req.params.file}`, () => {
+            console.log("Download");
+        })
+    })
+    .get('/initsession', (req, res, next) => {
+        let idsession = req.headers.idsession.split('/').join('')
+        if (existsSync(`./public/_files/${idsession}`)) {
+            rm(`./public/_files/${idsession}`, { force: true, recursive: true },()=>{
+                res.end()
+            })
         }
     })
 module.exports = router

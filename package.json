@@ -25,6 +25,7 @@
         "http-errors": "^1.7.3",
         "moment": "^2.24.0",
         "morgan": "^1.10.0",
+        "node-cron": "^2.0.3",
         "nodemailer": "^6.4.17",
         "sqlite": "^4.0.19",
         "unzipper": "^0.10.11",

@@ -99,8 +99,6 @@ async function sendEmail(mail, attachments) {
     })
 }
 
-sendEmail("koffiedy@gmail.com",[])
-
 exports.separate = separate
 exports.getExtensionFile = getExtensionFile
 exports.transformToCivNumber = transformToCivNumber
