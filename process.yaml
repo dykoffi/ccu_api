@@ -1,7 +1,7 @@
 apps:
   - name: ccu_api
     script: ./index.js
-    instances: 2
+    instances: max
     exec_mode: cluster
 
 deploy:
