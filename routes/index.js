@@ -74,4 +74,7 @@ router
             res.end()
         }
     })
+
+    .get('/count/visites')
+    .get('/count/files')
 module.exports = router
