@@ -30,8 +30,9 @@ exports.sequenceToLine = class sequenceToLine extends Transform {
     }
 }
 exports.vcfModifyNumber = class vcfModifyNumber extends Transform {
-    constructor(options) {
+    constructor(indice, options) {
         super({ ...options, objectMode: true })
+        this.indice = indice
     }
     _transform(chunk, enc, call) {
         chunk.forEach(line => {
@@ -51,9 +52,10 @@ exports.vcfModifyNumber = class vcfModifyNumber extends Transform {
 }
 
 exports.cspModifyNumber = class cspModifyNumber extends Transform {
-    constructor(options) {
+    constructor(indice, options) {
         super({ ...options, objectMode: true })
         this.str = ""
+        this.indice = indice
     }
 
     _transform(chunk, enc, call) {
@@ -88,8 +90,9 @@ exports.cspModifyNumber = class cspModifyNumber extends Transform {
 }
 
 exports.csvModifyNumber = class csvModifyNumber extends Transform {
-    constructor(options) {
+    constructor(indice, options) {
         super({ ...options, objectMode: true })
+        this.indice = indice
     }
     _transform(chunk, enc, call) {
         chunk.forEach(line => {
