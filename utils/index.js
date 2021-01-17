@@ -8,7 +8,7 @@ const { updateVCF, updateCSV, updateZIP } = require('./utils');
  * @param {*} fileStream 
  * @param {String} fileName 
  */
-async function dealFile(folder, fileStream, fileName) {
+async function dealFile(folder, fileStream, fileName, indice) {
     if (!fs.existsSync(join('public/_files', folder))) {
         fs.mkdirSync(join('public/_files', folder))
     }
@@ -18,7 +18,7 @@ async function dealFile(folder, fileStream, fileName) {
             case '.vcf': return await updateVCF(folder, fileStream, fileName);
             case '.csv': return await updateCSV(folder, fileStream, fileName);
             case '.zip': return await updateZIP(folder, fileStream, fileName);
-            default: console.log(`(Erreur) : fichier ${fileExt} non pris en charge`); break;
+            default: console.log(`(Erreur) : fichier ${fileExt} non pris en charge`); return undefined;
         }
     }
 }
