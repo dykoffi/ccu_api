@@ -146,4 +146,5 @@ async function sendEmail(mail, attachments) {
 exports.separate = separate
 exports.getExtensionFile = getExtensionFile
 exports.transformToCivNumber = transformToCivNumber
+exports.transformToCivNumberWithIndice = transformToCivNumberWithIndice
 exports.sendEmail = sendEmail

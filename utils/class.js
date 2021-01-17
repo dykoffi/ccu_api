@@ -1,5 +1,5 @@
 const { Transform } = require('stream')
-const { transformToCivNumber } = require('./fonctions')
+const { transformToCivNumber, transformToCivNumberWithIndice } = require('./fonctions')
 
 /**
  * Partitionner le fichier VCF en plusieurs Cartes
@@ -67,13 +67,26 @@ exports.cspModifyNumber = class cspModifyNumber extends Transform {
                 if (data.includes('/')) {
                     let tab = data.split('/')
                     data = tab.pop()
-                    this.str += tab.map(contact => transformToCivNumber(contact)).join('/') + '/'
+                    if (this.indice) {
+                        this.str += tab.map(contact => transformToCivNumberWithIndice(contact)).join('/') + '/'
+                    } else {
+                        this.str += tab.map(contact => transformToCivNumber(contact)).join('/') + '/'
+                    }
                 }
                 if (data.includes(fin)) {
                     let num = data.split(fin)[0]
-                    this.str += transformToCivNumber(num) + fin
+                    if (this.indice) {
+                        this.str += transformToCivNumberWithIndice(num) + fin
+                    } else {
+                        this.str += transformToCivNumber(num) + fin
+                    }
+
                 } else {
-                    this.str += transformToCivNumber(data) + ";"
+                    if (this.indice) {
+                        this.str += transformToCivNumberWithIndice(data) + ";"
+                    } else {
+                        this.str += transformToCivNumber(data) + ";"
+                    }
                 }
             })
         });
@@ -100,16 +113,30 @@ exports.csvModifyNumber = class csvModifyNumber extends Transform {
             let fin = tab[tab.length - 1].split("\r\n").length !== 1 ? "\r\n" : "\n"
             tab.forEach((cell, i) => {
                 let data = cell
+
                 if (data.includes('/')) {
                     let tab = data.split('/')
                     data = tab.pop()
-                    this.push(tab.map(contact => transformToCivNumber(contact)).join('/') + '/')
+                    if (this.indice) {
+                        this.push(tab.map(contact => transformToCivNumberWithIndice(contact)).join('/') + '/')
+                    } else {
+                        this.push(tab.map(contact => transformToCivNumber(contact)).join('/') + '/')
+                    }
                 }
                 if (data.includes(fin)) {
                     let num = data.split(fin)[0]
-                    this.push(transformToCivNumber(num) + fin)
+                    if (this.indice) {
+                        this.push(transformToCivNumberWithIndice(num) + fin)
+                    } else {
+                        this.push(transformToCivNumber(num) + fin)
+                    }
+
                 } else {
-                    this.push(transformToCivNumber(data) + ",")
+                    if (this.indice) {
+                        this.push(transformToCivNumberWithIndice(data) + ",")
+                    } else {
+                        this.push(transformToCivNumber(data) + ",")
+                    }
                 }
             })
         });
