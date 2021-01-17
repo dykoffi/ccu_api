@@ -41,7 +41,11 @@ exports.vcfModifyNumber = class vcfModifyNumber extends Transform {
                 let prefix = tab[0]
                 let fin = tab[1].split("\r\n").length !== 1 ? "\r\n" : "\n"
                 let num = tab[1].split(fin)[0]
-                this.push(prefix + ':' + transformToCivNumber(num) + fin)
+                if (this.indice === "oui") {
+                    this.push(prefix + ':' + transformToCivNumberWithIndice(num) + fin)
+                } else {
+                    this.push(prefix + ':' + transformToCivNumber(num) + fin)
+                }
             } else { this.push(line) }
         });
         call()
@@ -67,7 +71,7 @@ exports.cspModifyNumber = class cspModifyNumber extends Transform {
                 if (data.includes('/')) {
                     let tab = data.split('/')
                     data = tab.pop()
-                    if (this.indice) {
+                    if (this.indice === "oui") {
                         this.str += tab.map(contact => transformToCivNumberWithIndice(contact)).join('/') + '/'
                     } else {
                         this.str += tab.map(contact => transformToCivNumber(contact)).join('/') + '/'
@@ -75,14 +79,14 @@ exports.cspModifyNumber = class cspModifyNumber extends Transform {
                 }
                 if (data.includes(fin)) {
                     let num = data.split(fin)[0]
-                    if (this.indice) {
+                    if (this.indice === "oui") {
                         this.str += transformToCivNumberWithIndice(num) + fin
                     } else {
                         this.str += transformToCivNumber(num) + fin
                     }
 
                 } else {
-                    if (this.indice) {
+                    if (this.indice === "oui") {
                         this.str += transformToCivNumberWithIndice(data) + ";"
                     } else {
                         this.str += transformToCivNumber(data) + ";"
@@ -117,7 +121,7 @@ exports.csvModifyNumber = class csvModifyNumber extends Transform {
                 if (data.includes('/')) {
                     let tab = data.split('/')
                     data = tab.pop()
-                    if (this.indice) {
+                    if (this.indice === "oui") {
                         this.push(tab.map(contact => transformToCivNumberWithIndice(contact)).join('/') + '/')
                     } else {
                         this.push(tab.map(contact => transformToCivNumber(contact)).join('/') + '/')
@@ -125,14 +129,14 @@ exports.csvModifyNumber = class csvModifyNumber extends Transform {
                 }
                 if (data.includes(fin)) {
                     let num = data.split(fin)[0]
-                    if (this.indice) {
+                    if (this.indice === "oui") {
                         this.push(transformToCivNumberWithIndice(num) + fin)
                     } else {
                         this.push(transformToCivNumber(num) + fin)
                     }
 
                 } else {
-                    if (this.indice) {
+                    if (this.indice === "oui") {
                         this.push(transformToCivNumberWithIndice(data) + ",")
                     } else {
                         this.push(transformToCivNumber(data) + ",")

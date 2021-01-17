@@ -8,7 +8,7 @@ const nodemailer = require("nodemailer");
  */
 function transformToCivNumberWithIndice(number) {
     let numero = number.split(' ').join('').split('-').join('').split('.').join('')
-    if (/^(\+225|00225|225|\(\+225\)){1}\d{8}$/.test(numero)) {
+    if (/^(\+225|00225|225|\(\+225\))\d{8}$/.test(numero)) {
         let num = numero.slice(-8)
         if ([2, 3].includes(parseInt(num[0]))) {
             //Numero fixe
