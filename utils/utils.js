@@ -3,7 +3,7 @@ const { sequenceToLine, vcfModifyNumber, csvModifyNumber, cspModifyNumber } = re
 const { join, basename, extname } = require('path')
 const unzipper = require('unzipper')
 const zl = require("zip-lib");
-function updateVCF(folder, fileStream, fileName) {
+function updateVCF(folder, fileStream, fileName, indice) {
     let file = fileName
     let i = 0
     while (existsSync(join('public/_files', folder, 'ccu-' + file))) {
@@ -14,7 +14,7 @@ function updateVCF(folder, fileStream, fileName) {
     return new Promise((resolve, reject) => {
         fileStream
             .pipe(new sequenceToLine())
-            .pipe(new vcfModifyNumber())
+            .pipe(new vcfModifyNumber(indice))
             .pipe(createWriteStream(join('public/_files', folder, 'ccu-' + file)))
             .on("finish", () => {
                 resolve(join('public/_files', folder, 'ccu-' + file))
@@ -23,7 +23,7 @@ function updateVCF(folder, fileStream, fileName) {
 
 }
 
-function updateCSV(folder, fileStream, fileName) {
+function updateCSV(folder, fileStream, fileName,indice) {
     let file = fileName
     let i = 0
     while (existsSync(join('public/_files', folder, 'ccu-' + file))) {
@@ -33,8 +33,8 @@ function updateCSV(folder, fileStream, fileName) {
     return new Promise((resolve, reject) => {
         fileStream
             .pipe(new sequenceToLine())
-            .pipe(new cspModifyNumber())
-            .pipe(new csvModifyNumber())
+            .pipe(new cspModifyNumber(indice))
+            .pipe(new csvModifyNumber(indice))
             .pipe(createWriteStream(join('public/_files', folder, 'ccu-' + file)))
             .on("finish", () => {
                 resolve(join('public/_files', folder, 'ccu-' + file))
@@ -43,7 +43,7 @@ function updateCSV(folder, fileStream, fileName) {
 }
 
 
-function updateZIP(folder, fileStream, fileName) {
+function updateZIP(folder, fileStream, fileName, indice) {
     let file = fileName
     let i = 0
     while (existsSync(join('public/_files', folder, 'ccu-' + file))) {
@@ -65,12 +65,12 @@ function updateZIP(folder, fileStream, fileName) {
                     let entrySequence = entry.pipe(new sequenceToLine())
                     if (fileExt === '.csv') {
                         entrySequence
-                            .pipe(new cspModifyNumber())
-                            .pipe(new csvModifyNumber())
+                            .pipe(new cspModifyNumber(indice))
+                            .pipe(new csvModifyNumber(indice))
                             .pipe(createWriteStream(join('public/_files', folder, 'zipTemp', 'ccu-' + fileBaseName)))
                     } else if (fileExt === '.vcf') {
                         entrySequence
-                            .pipe(new vcfModifyNumber())
+                            .pipe(new vcfModifyNumber(indice))
                             .pipe(createWriteStream(join('public/_files', folder, 'zipTemp', 'ccu-' + fileBaseName)))
                     }
                 }
