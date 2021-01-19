@@ -101,21 +101,21 @@ exports.csvModifyNumber = class csvModifyNumber extends Transform {
             let fin = tab[tab.length - 1].split("\r\n").length !== 1 ? "\r\n" : "\n"
             tab.forEach((cell, i) => {
                 let data = cell
+                let lineSeq = line.split(':')
+                let dataSeq = data.split(':')
 
                 if (data.includes('/')) {
                     let tab = data.split('/')
                     data = tab.pop()
                     this.push(tab.map(contact => transformContacts(contact, this.indice)).join('/') + '/')
                 }
+                if (lineSeq.length === 2 ) {
+                    this.push(lineSeq[0] + ":" + transformContacts(lineSeq[1], this.indice) + fin)
+                }
                 if (data.includes(fin)) {
-                    let cell = data.split(fin)
-                    if (cell.length > 1) {
-
-                    } else {
-                        let num = cell[0]
-                        this.push(transformContacts(num, this.indice) + fin)
-                    }
-
+                    let lineCell = data.split(fin)
+                    let num = lineCell[0]
+                    this.push(transformContacts(num, this.indice) + fin)
                 } else {
                     this.push(transformContacts(data, this.indice) + ",")
                 }

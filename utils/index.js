@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const { extname, join } = require('path')
 const fs = require('fs')
-const { updateVCF, updateCSV, updateZIP } = require('./utils');
+const { updateVCF, updateCSV, updateZIP, updateEXCEL } = require('./utils');
 
 /**
  * 
@@ -18,6 +18,7 @@ async function dealFile(folder, fileStream, fileName, indice) {
             case '.vcf': return await updateVCF(folder, fileStream, fileName, indice);
             case '.csv': return await updateCSV(folder, fileStream, fileName, indice);
             case '.zip': return await updateZIP(folder, fileStream, fileName, indice);
+            case '.xlsx': return await updateEXCEL(folder, fileStream, fileName, indice);
             default: console.log(`(Erreur) : fichier ${fileExt} non pris en charge`); return undefined;
         }
     }
