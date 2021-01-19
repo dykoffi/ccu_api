@@ -1,6 +1,3 @@
-const nodemailer = require("nodemailer");
-
-
 /**
  * Actualisaer un numero ivoirien en fonction des nouvelles 
  * normes de numerotation
@@ -8,7 +5,7 @@ const nodemailer = require("nodemailer");
  */
 function transformToCivNumberWithIndice(number) {
     let numero = number.split(' ').join('').split('-').join('').split('.').join('')
-    if (/^(\+225|00225|225|\(\+225\))\d{8}$/.test(numero)) {
+    if (/^(\+225|00225|\(\+225\))\d{8}$/.test(numero)) {
         let num = numero.slice(-8)
         if ([2, 3].includes(parseInt(num[0]))) {
             //Numero fixe
@@ -50,7 +47,7 @@ function transformToCivNumberWithIndice(number) {
  */
 function transformToCivNumber(number) {
     let numero = number.split(' ').join('').split('-').join('').split('.').join('')
-    if (/^(\+225|00225|225|\(\+225\)){0,1}\d{8}$/.test(numero)) {
+    if (/^(\+225|00225|\(\+225\)){0,1}\d{8}$/.test(numero)) {
         let num = numero.slice(-8)
         if ([2, 3].includes(parseInt(num[0]))) {
             //Numero fixe
@@ -82,6 +79,10 @@ function transformToCivNumber(number) {
     } else {
         return number
     }
+}
+
+function transformContacts(number, indice) {
+    return indice === "oui" ? transformToCivNumberWithIndice(number) : transformToCivNumber(number)
 }
 
 /**
@@ -116,35 +117,36 @@ function getExtensionFile(file) {
  * @param {String} mail 
  * @param {Array<String>} attachments 
  */
-async function sendEmail(mail, attachments) {
-    let transporter = nodemailer.createTransport({
-        host: 'smtp.gmail.com',
-        port: 465,
-        secure: true,
-        auth: {
-            user: "nodytic@gmail.com",
-            pass: Buffer.from("QEFyaXN0aWRlNTU=", 'base64').toString('ascii'),
-        },
-    });
+// async function sendEmail(mail, attachments) {
+//     let transporter = nodemailer.createTransport({
+//         host: 'smtp.gmail.com',
+//         port: 465,
+//         secure: true,
+//         auth: {
+//             user: "nodytic@gmail.com",
+//             pass: Buffer.from("QEFyaXN0aWRlNTU=", 'base64').toString('ascii'),
+//         },
+//     });
 
-    await transporter.sendMail({
-        from: 'CCU APP',
-        to: mail,
-        subject: "CCU | Receive Your Contact",
-        html: `
-                <h1>Hi</h1>
-                <h3>Thanks for using CCu. below, your files</h3>
-                `,
-        attachments: attachments
-    }).then(() => {
-        console.log("mail send to " + mail);
-    }).catch((err) => {
-        console.log(err);
-    })
-}
+//     await transporter.sendMail({
+//         from: 'CCU APP',
+//         to: mail,
+//         subject: "CCU | Receive Your Contact",
+//         html: `
+//                 <h1>Hi</h1>
+//                 <h3>Thanks for using CCu. below, your files</h3>
+//                 `,
+//         attachments: attachments
+//     }).then(() => {
+//         console.log("mail send to " + mail);
+//     }).catch((err) => {
+//         console.log(err);
+//     })
+// }
 
 exports.separate = separate
 exports.getExtensionFile = getExtensionFile
 exports.transformToCivNumber = transformToCivNumber
 exports.transformToCivNumberWithIndice = transformToCivNumberWithIndice
-exports.sendEmail = sendEmail
+// exports.sendEmail = sendEmail
+exports.transformContacts = transformContacts

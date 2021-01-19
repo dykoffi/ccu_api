@@ -21,7 +21,7 @@ router
                 .on('file', async function (fieldname, fileStream, filename, encoding, mimetype) {
                     let fl = await dealFile(idsession, fileStream, basename(filename), indice)
                     if (fl) {
-                        let time = moment().add(4, 'minute')
+                        let time = moment().add(2, 'minute')
                         let min = time.get('minute')
                         let heure = time.get('hour')
                         let jour = time.get('DDD')

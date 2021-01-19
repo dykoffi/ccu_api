@@ -1,5 +1,5 @@
 const { Transform } = require('stream')
-const { transformToCivNumber, transformToCivNumberWithIndice } = require('./fonctions')
+const { transformContacts } = require('./fonctions')
 
 /**
  * Partitionner le fichier VCF en plusieurs Cartes
@@ -41,11 +41,7 @@ exports.vcfModifyNumber = class vcfModifyNumber extends Transform {
                 let prefix = tab[0]
                 let fin = tab[1].split("\r\n").length !== 1 ? "\r\n" : "\n"
                 let num = tab[1].split(fin)[0]
-                if (this.indice === "oui") {
-                    this.push(prefix + ':' + transformToCivNumberWithIndice(num) + fin)
-                } else {
-                    this.push(prefix + ':' + transformToCivNumber(num) + fin)
-                }
+                this.push(prefix + ':' + transformContacts(num, this.indice) + fin)
             } else { this.push(line) }
         });
         call()
@@ -71,26 +67,14 @@ exports.cspModifyNumber = class cspModifyNumber extends Transform {
                 if (data.includes('/')) {
                     let tab = data.split('/')
                     data = tab.pop()
-                    if (this.indice === "oui") {
-                        this.str += tab.map(contact => transformToCivNumberWithIndice(contact)).join('/') + '/'
-                    } else {
-                        this.str += tab.map(contact => transformToCivNumber(contact)).join('/') + '/'
-                    }
+                    this.str += tab.map(contact => transformContacts(contact, this.indice)).join('/') + '/'
                 }
                 if (data.includes(fin)) {
                     let num = data.split(fin)[0]
-                    if (this.indice === "oui") {
-                        this.str += transformToCivNumberWithIndice(num) + fin
-                    } else {
-                        this.str += transformToCivNumber(num) + fin
-                    }
+                    this.str += transformContacts(num, this.indice) + fin
 
                 } else {
-                    if (this.indice === "oui") {
-                        this.str += transformToCivNumberWithIndice(data) + ";"
-                    } else {
-                        this.str += transformToCivNumber(data) + ";"
-                    }
+                    this.str += transformContacts(data, this.indice) + ";"
                 }
             })
         });
@@ -121,26 +105,19 @@ exports.csvModifyNumber = class csvModifyNumber extends Transform {
                 if (data.includes('/')) {
                     let tab = data.split('/')
                     data = tab.pop()
-                    if (this.indice === "oui") {
-                        this.push(tab.map(contact => transformToCivNumberWithIndice(contact)).join('/') + '/')
-                    } else {
-                        this.push(tab.map(contact => transformToCivNumber(contact)).join('/') + '/')
-                    }
+                    this.push(tab.map(contact => transformContacts(contact, this.indice)).join('/') + '/')
                 }
                 if (data.includes(fin)) {
-                    let num = data.split(fin)[0]
-                    if (this.indice === "oui") {
-                        this.push(transformToCivNumberWithIndice(num) + fin)
+                    let cell = data.split(fin)
+                    if (cell.length > 1) {
+
                     } else {
-                        this.push(transformToCivNumber(num) + fin)
+                        let num = cell[0]
+                        this.push(transformContacts(num, this.indice) + fin)
                     }
 
                 } else {
-                    if (this.indice === "oui") {
-                        this.push(transformToCivNumberWithIndice(data) + ",")
-                    } else {
-                        this.push(transformToCivNumber(data) + ",")
-                    }
+                    this.push(transformContacts(data, this.indice) + ",")
                 }
             })
         });
