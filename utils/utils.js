@@ -77,7 +77,6 @@ function updateCSV(folder, fileStream, fileName, indice) {
         resolve(join('public/_files', folder, 'ccu-' + file))
     })
 }
-
 function updateEXCEL(folder, fileStream, fileName, indice) {
     let file = fileName
     let i = 0
@@ -130,7 +129,7 @@ function updateZIP(folder, fileStream, fileName, indice) {
     return new Promise((resolve, reject) => {
         fileStream
             .pipe(unzipper.Parse())
-            .on('entry', function (entry) {
+            .on('entry', async function (entry) {
                 if (!existsSync(join('public/_files', folder, 'zipTemp'))) {
                     mkdirSync(join('public/_files', folder, 'zipTemp'))
                 }
@@ -141,11 +140,12 @@ function updateZIP(folder, fileStream, fileName, indice) {
                     let fileExt = extname(file)
                     let entrySequence = entry.pipe(new sequenceToLine())
                     if (fileExt === '.csv') {
-                        entrySequence
-                            .pipe(new cspModifyNumber(indice))
-                            .pipe(new csvModifyNumber(indice))
-                            .pipe(createWriteStream(join('public/_files', folder, 'zipTemp', 'ccu-' + fileBaseName)))
-                    } else if (fileExt === '.vcf') {
+                        await updateCSV(join(folder, 'zipTemp'), entry, fileBaseName, indice)
+                    }
+                    else if (fileExt === '.xlsx') {
+                        await updateEXCEL(join(folder, 'zipTemp'), entry, fileBaseName, indice)
+                    }
+                    else if (fileExt === '.vcf') {
                         entrySequence
                             .pipe(new vcfModifyNumber(indice))
                             .pipe(createWriteStream(join('public/_files', folder, 'zipTemp', 'ccu-' + fileBaseName)))
