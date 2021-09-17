@@ -24,7 +24,7 @@ router
                         let time = moment().add(1, 'minute')
                         let min = time.get('minute')
                         let heure = time.get('hour')
-                        let jour = time.get('DDD')
+                        let jour = time.date()
                         let mois = time.get('month') + 1
                         filesDeal.push(fl)
                         let task = cron.schedule(`${min} ${heure} ${jour} ${mois} *`, () => {
