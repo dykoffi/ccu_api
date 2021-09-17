@@ -3,7 +3,7 @@ const http = require('http'); // le module http
 const app = require("./app")
 const debug = require('debug')("debug:ccu_api")
 
-const port = normalizePort(process.env.PORT || "4001")
+const port = normalizePort(process.env.PORT || "passenger")
 const server = http.createServer(app)
 
 app.set('port', port)
